@@ -1,9 +1,8 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
-require("express-async-errors");
 const { connection } = require("./config/db");
-const { userRouter } = require("./routes/user.route");
+const { userRouter } = require("./Routes/User.route");
 const app = express();
 const PORT = process.env.PORT;
 
@@ -18,7 +17,7 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res
     .status(200)
-    .send({ message: "welcome to trendy vibes testing Homepage API" });
+    .send({ message: "Welcome..." });
 });
 
 app.use("/user", userRouter);
