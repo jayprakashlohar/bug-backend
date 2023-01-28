@@ -16,11 +16,11 @@ userRouter.post("/signup", async (req, res) => {
         // Store hash in your password DB.
         const userDetails = new UserModel({ email, password: hash });
         await userDetails.save();
-        res.send({ response: "user registerd successfully" });
+        res.status(200).send({ response: "user registerd successfully" });
       });
     }
   } catch (error) {
-    res.send("something went wrong please try again");
+    res.status(404).send("something went wrong please try again");
   }
 });
 
@@ -39,15 +39,15 @@ userRouter.post("/login", async (req, res) => {
           var token = jwt.sign({ userID: check_exist[0]._id }, "secret");
           res.send({ msg: "Login successfully", token: token });
         } else {
-          res.send({ response: "Invalid Credential" });
+          res.status(200).send({ response: "Invalid Credential" });
         }
       });
     } catch (error) {
       console.log(error.message);
-      res.send("something went wrong please try after sometime");
+      res.status(404).send("something went wrong please try after sometime");
     }
   } else {
-    res.send({ response: "please signup first" });
+    res.status(400).send({ response: "please signup first" });
   }
 });
 
