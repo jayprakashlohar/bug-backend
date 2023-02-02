@@ -9,7 +9,7 @@ userRouter.post("/signup", async (req, res) => {
   const check_exist = await UserModel.find({ email });
   try {
     if (check_exist.length > 0) {
-      res.send({ response: "user already registerd please login" });
+      res.status(404).send({ response: "user already registerd please login" });
     } else {
       //we required bcryt package for hasing password
       bcrypt.hash(password, 4, async function (err, hash) {
@@ -39,7 +39,7 @@ userRouter.post("/login", async (req, res) => {
           var token = jwt.sign({ userID: check_exist[0]._id }, "secret");
           res.send({ msg: "Login successfully", token: token });
         } else {
-          res.status(200).send({ response: "Invalid Credential" });
+          res.status(404).send({ response: "Invalid Credential" });
         }
       });
     } catch (error) {
