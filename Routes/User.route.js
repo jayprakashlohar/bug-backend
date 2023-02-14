@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 
 userRouter.post("/signup", async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
   const check_exist = await UserModel.find({ email });
   try {
     if (check_exist.length > 0) {
@@ -14,7 +14,7 @@ userRouter.post("/signup", async (req, res) => {
       //we required bcryt package for hasing password
       bcrypt.hash(password, 4, async function (err, hash) {
         // Store hash in your password DB.
-        const userDetails = new UserModel({ email, password: hash });
+        const userDetails = new UserModel({ name, email, password: hash });
         await userDetails.save();
         res.status(200).send({ response: "user registerd successfully" });
       });
@@ -48,6 +48,24 @@ userRouter.post("/login", async (req, res) => {
     }
   } else {
     res.status(400).send({ response: "please signup first" });
+  }
+});
+
+userRouter.get("/getProfile", async (req, res) => {
+  let token = req.headers.token;
+  try {
+    var decoded = jwt.verify(token, "secret");
+    let { userID } = decoded;
+    let userDetails = await UserModel.findOne({ _id: userID });
+    res.send({
+      res: {
+        name: userDetails.name,
+        email: userDetails.email,
+      },
+    });
+  } catch (err) {
+    res.status(404).send({ res: "Something went wrong " });
+    console.log(err);
   }
 });
 
