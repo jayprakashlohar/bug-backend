@@ -4,6 +4,7 @@ const cors = require("cors");
 const { connection } = require("./config/db");
 const { userRouter } = require("./Routes/User.route");
 const { productRouter } = require("./Routes/Products.route");
+const { mobileRouter } = require("./Routes/MobileProducts.route");
 const app = express();
 const PORT = process.env.PORT;
 
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
 
 app.use("/user", userRouter);
 app.use("/product", productRouter);
+app.use("/iphone", mobileRouter);
 
 app.listen(PORT, async () => {
   try {
