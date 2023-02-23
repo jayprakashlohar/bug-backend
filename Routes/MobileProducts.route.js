@@ -8,6 +8,17 @@ mobileRouter.get("/", async (req, res) => {
   res.send(product);
 });
 
+//Find by id
+mobileRouter.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const product = await AppleProductModel.findById(id);
+    res.status(200).json(product);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
 //Add new product
 mobileRouter.post("/createproduct", async (req, res) => {
   const payload = req.body;
