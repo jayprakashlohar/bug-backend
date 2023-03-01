@@ -50,4 +50,19 @@ cartRouter.delete("/delete/:id", async (req, res) => {
   }
 });
 
+cartRouter.patch("/update/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { qty } = req.body.data;
+    const product = await CartModel.findOne({ id });
+    product.qty = qty;
+    const updatedData = product;
+    await CartModel.findByIdAndUpdate({ _id: id }, updatedData);
+
+    res.status(200).send({ msg: "Data updeted", data: updatedData });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 module.exports = { cartRouter };
