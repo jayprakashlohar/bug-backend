@@ -27,7 +27,7 @@ userRouter.post("/signup", async (req, res) => {
 userRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const check_exist = await UserModel.find({ email });
-  console.log(check_exist);
+
   if (check_exist.length > 0) {
     try {
       //compare user password with hased password
@@ -53,6 +53,7 @@ userRouter.post("/login", async (req, res) => {
 
 userRouter.get("/getProfile", async (req, res) => {
   let token = req.headers.token;
+
   try {
     var decoded = jwt.verify(token, "secret");
     let { userID } = decoded;

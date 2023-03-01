@@ -6,6 +6,7 @@ const MobileProductSchema = mongoose.Schema({
   brand: String,
   rate: String,
   Price: Number,
+  qty:Number
 });
 
 const AppleProductModel = mongoose.model("mobile", MobileProductSchema);

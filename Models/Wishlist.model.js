@@ -7,6 +7,7 @@ const WishlistSchema = mongoose.Schema({
   brand: String,
   rate: String,
   price: Number,
+  qty: Number,
 });
 
 const WishlistModel = mongoose.model("wishlist", WishlistSchema);
