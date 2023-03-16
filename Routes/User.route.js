@@ -4,6 +4,12 @@ const userRouter = express.Router();
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 
+
+userRouter.get("/", async (req, res) => {
+  let users = await UserModel.find();
+  res.send(users);
+});
+
 userRouter.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
   const check_exist = await UserModel.find({ email });

@@ -2,13 +2,13 @@ const express = require("express");
 const { AppleProductModel } = require("../Models/MobileProducts.model");
 const mobileRouter = express.Router();
 
-//Get all product
-// mobileRouter.get("/", async (req, res) => {
-//   const product = await AppleProductModel.find();
-//   res.send(product);
-// });
+// Get all product
+mobileRouter.get("/", async (req, res) => {
+  const product = await AppleProductModel.find();
+  res.send(product);
+});
 
-//Find by id
+// //Find by id
 mobileRouter.get("/:id", async (req, res) => {
   const id = req.params.id;
   try {
@@ -55,6 +55,23 @@ mobileRouter.post("/createproduct", async (req, res) => {
   }
 });
 
+// mobileRouter.post("/createproduct", async (req, res) => {
+//   const { imgUrl, title, price, brand, qty } = req.body;
+//   try {
+//     let newProduct = new AppleProductModel({
+//       imgUrl,
+//       title,
+//       price,
+//       brand,
+//       qty,
+//     });
+//     await newProduct.save();
+//     res.status(200).send(newProduct);
+//   } catch (err) {
+//     res.status(400).send(err.message);
+//   }
+// });
+
 //Update product
 mobileRouter.put("/update/:id", async (req, res) => {
   try {
@@ -76,6 +93,7 @@ mobileRouter.put("/update/:id", async (req, res) => {
 //Delete product
 mobileRouter.delete("/delete/:id", async (req, res) => {
   const productID = req.params.id;
+
   try {
     await AppleProductModel.findByIdAndDelete({ _id: productID });
     res.send({ msg: "Product deleted successfully" });
