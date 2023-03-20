@@ -4,7 +4,6 @@ const userRouter = express.Router();
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 
-
 userRouter.get("/", async (req, res) => {
   let users = await UserModel.find();
   res.send(users);
@@ -59,7 +58,6 @@ userRouter.post("/login", async (req, res) => {
 
 userRouter.get("/getProfile", async (req, res) => {
   let token = req.headers.token;
-
   try {
     var decoded = jwt.verify(token, "secret");
     let { userID } = decoded;
