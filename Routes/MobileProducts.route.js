@@ -55,23 +55,6 @@ mobileRouter.post("/createproduct", async (req, res) => {
   }
 });
 
-// mobileRouter.post("/createproduct", async (req, res) => {
-//   const { imgUrl, title, price, brand, qty } = req.body;
-//   try {
-//     let newProduct = new AppleProductModel({
-//       imgUrl,
-//       title,
-//       price,
-//       brand,
-//       qty,
-//     });
-//     await newProduct.save();
-//     res.status(200).send(newProduct);
-//   } catch (err) {
-//     res.status(400).send(err.message);
-//   }
-// });
-
 //Update product
 mobileRouter.put("/update/:id", async (req, res) => {
   try {
@@ -103,3 +86,20 @@ mobileRouter.delete("/delete/:id", async (req, res) => {
 });
 
 module.exports = { mobileRouter };
+
+// mobileRouter.post("/createproduct", async (req, res) => {
+//   const { imgUrl, title, price, brand, qty } = req.body;
+//   try {
+//     let newProduct = new AppleProductModel({
+//       imgUrl,
+//       title,
+//       price,
+//       brand,
+//       qty,
+//     });
+//     await newProduct.save();
+//     res.status(200).send(newProduct);
+//   } catch (err) {
+//     res.status(400).send(err.message);
+//   }
+// });
