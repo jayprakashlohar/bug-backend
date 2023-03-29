@@ -3,7 +3,7 @@ const { AppleProductModel } = require("../Models/MobileProducts.model");
 const mobileRouter = express.Router();
 
 // Get all product
-mobileRouter.get("/", async (req, res) => {
+mobileRouter.get("/all", async (req, res) => {
   const product = await AppleProductModel.find();
   res.send(product);
 });

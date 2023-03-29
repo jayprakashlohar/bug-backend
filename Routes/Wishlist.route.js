@@ -92,6 +92,7 @@ wishlistRouter.get("/:id", async (req, res) => {
 // Add Product
 wishlistRouter.post("/createproduct", async (req, res) => {
   const token = req.headers?.token;
+  console.log("token", token);
   const decoded = await jwt.verify(token, "secret");
   let userId = decoded.userID;
   try {
