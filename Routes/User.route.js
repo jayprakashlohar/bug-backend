@@ -2,7 +2,9 @@ const express = require("express");
 const { UserModel } = require("../Models/User.model");
 const userRouter = express.Router();
 const bcrypt = require("bcrypt");
-var jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const randomstring = require("randomstring");
 
 userRouter.get("/", async (req, res) => {
   let users = await UserModel.find();
@@ -41,7 +43,13 @@ userRouter.post("/login", async (req, res) => {
         // result == true if password matched
         if (result) {
           //genrate a token using jwt package and send back to user
-          var token = jwt.sign({ userID: check_exist[0]._id }, "secret");
+          var token = jwt.sign(
+            { userID: check_exist[0]._id },
+            "secret"
+            // {
+            //   expiresIn: "1m",
+            // }
+          );
           res.send({ msg: "Login successfully", token: token });
         } else {
           res.status(404).send({ response: "Invalid Credential" });
@@ -71,6 +79,96 @@ userRouter.get("/getProfile", async (req, res) => {
   } catch (err) {
     res.status(404).send({ res: "Something went wrong " });
     console.log(err);
+  }
+});
+
+// Forgot password
+
+const securePassword = async (password) => {
+  try {
+    const hashPassword = await bcrypt.hash(password, 10);
+    return hashPassword;
+  } catch (error) {
+    res.status(400).send({ msg: error.message });
+  }
+};
+
+const sandResetPasswordMail = async (email, token) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      host: process.env.HOST,
+      port: 587,
+      service: process.env.SERVICE,
+      auth: {
+        user: process.env.userEmail,
+        pass: process.env.userPass,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.userEmail,
+      to: email,
+      subject: "Reset Your Password",
+      html: `<p>Click <a href=" https://apple-hub-orignal.netlify.app/user/reset-password/${token}">here</a> to reset your password.</p>`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log("error", error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+  } catch (error) {
+    res.status(400).send({ msg: error.message });
+  }
+};
+
+userRouter.post("/forgot-password", async (req, res) => {
+  try {
+    const email = req.body.email;
+    const userData = await UserModel.findOne({ email: email });
+
+    if (userData) {
+      const randomString = randomstring.generate();
+      const data = await UserModel.updateOne(
+        { email: email },
+        { $set: { token: randomString } }
+      );
+      sandResetPasswordMail(userData.email, randomString);
+      res.send({ success: true, msg: "Please check your inbox of mail" });
+    } else {
+      res.send({ success: true, msg: "This email does not exit" });
+    }
+  } catch (error) {
+    res.status(400).send({ success: false, msg: error.message });
+  }
+});
+
+userRouter.post("/reset-password/:token", async (req, res) => {
+  try {
+    // const token = req.query.token;
+    const token = req.params.token;
+    const tokenData = await UserModel.findOne({ token: token });
+
+    if (tokenData) {
+      const password = req.body.password;
+      const newPassword = await securePassword(password);
+      const userData = await UserModel.findByIdAndUpdate(
+        { _id: tokenData._id },
+        { $set: { password: newPassword, token: "" } },
+        { new: true }
+      );
+      res.send({
+        success: true,
+        msg: "User password has been reset",
+        data: userData,
+      });
+    } else {
+      res.send({ success: true, msg: "This link has been expired" });
+    }
+  } catch (error) {
+    res.status(404).send({ success: false, msg: error.message });
   }
 });
 

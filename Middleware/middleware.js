@@ -1,8 +1,12 @@
 const jwt = require("jsonwebtoken");
+
 const Authentication = async (req, res, next) => {
   const token = req.headers?.authorization?.split(" ")[1];
   if (token) {
     const decoded = await jwt.verify(token, process.env.JWT);
+    // if (Date.now()/1000 >= decoded.exp) {
+    // return res.send({ code: 403, massege: "Token Exprired" });
+    // }
     if (decoded?.userid.length > 0) {
       req.body.userid = decoded.userid;
       next();

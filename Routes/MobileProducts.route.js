@@ -85,6 +85,21 @@ mobileRouter.delete("/delete/:id", async (req, res) => {
   }
 });
 
+// SEARCHING
+// mobileRouter.get("/", async (req, res) => {
+//   try {
+//     const query = req.query.q;
+//     const regex = new RegExp(query, "i");
+//     const results = await AppleProductModel.find({
+//       $or: [{ title: regex }, { brand: regex }, { rate: regex }],
+//     });
+//     res.status(200).send(results);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Server error");
+//   }
+// });
+
 module.exports = { mobileRouter };
 
 // mobileRouter.post("/createproduct", async (req, res) => {
