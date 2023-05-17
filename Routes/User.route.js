@@ -109,7 +109,7 @@ const sandResetPasswordMail = async (email, token) => {
       from: process.env.userEmail,
       to: email,
       subject: "Reset Your Password",
-      html: `<p>Click <a href=" https://apple-hub-orignal.netlify.app/user/reset-password/${token}">here</a> to reset your password.</p>`,
+      html: `<p>Click <a href="https://apple-hub-orignal.netlify.app/user/reset-password/${token}">here</a> to reset your password.</p>`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
