@@ -12,8 +12,9 @@ mobileRouter.get("/all", async (req, res) => {
 mobileRouter.get("/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    const product = await AppleProductModel.findById(id);
-    res.status(200).json(product);
+    const product = await AppleProductModel.find();
+    let singleProduct = product.find((item) => item.id == id);
+    res.send(singleProduct);
   } catch (err) {
     res.status(500).send(err.message);
   }
