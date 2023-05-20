@@ -35,5 +35,5 @@ app.listen(PORT, async () => {
   } catch (err) {
     console.log(err);
   }
-  console.log(`Server is listning on PORT${PORT}`);
+  console.log(`Server is listning on PORT ${PORT}`);
 });
