@@ -21,24 +21,59 @@ mobileRouter.get("/:id", async (req, res) => {
 });
 
 //Pagination
-mobileRouter.get("/", async (req, res) => {
-  // const { limit = 10, page = 1 } = req.query;
-  const limit = req.query.limit || 10;
-  const page = req.query.page || 1;
-  try {
-    const data = await AppleProductModel.find({});
-    // .limit(limit)
-    // .skip((page - 1) * limit);
-    let start;
-    let end = page * limit;
-    if (page == 1) {
-      start = page * limit - limit - 1;
-    } else {
-      start = page * limit - limit;
-    }
+// mobileRouter.get("/", async (req, res) => {
+//   const query = req.query.q;
+//   // let search = req.query.search || "";
+//   const regex = new RegExp(query, "i");
+//   const limit = req.query.limit || 10;
+//   const page = req.query.page || 1;
+//   try {
+//     const data = await AppleProductModel.find({
+//       $or: [{ title: regex }, { brand: regex }, { rate: regex }],
+//       // $and: [{ title: { $regex: search, $options: "i" } }],
+//     });
+//     let start;
+//     let end = page * limit;
+//     if (page == 1) {
+//       start = page * limit - limit - 1;
+//     } else {
+//       start = page * limit - limit;
+//     }
 
-    let data1 = data.filter((item, ind) => ind >= start && ind < end);
-    res.send(data1);
+//     let data1 = data.filter((item, ind) => ind >= start && ind < end);
+//     res.send(data1);
+//   } catch (err) {
+//     res.status(500).send(err.message);
+//   }
+// });
+
+mobileRouter.get("/", async (req, res) => {
+  try {
+    const query = req.query.q || "";
+    const regex = new RegExp(query, "i");
+
+    const limit = parseInt(req.query.limit) || 8;
+    const page = parseInt(req.query.page) || 1;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const searchCriteria = {
+      $or: [{ title: regex }, { brand: regex }],
+    };
+
+    const totalResults = await AppleProductModel.countDocuments(searchCriteria);
+    const totalPages = Math.ceil(totalResults / limit);
+
+    const data = await AppleProductModel.find(searchCriteria)
+      .skip(startIndex)
+      .limit(limit);
+
+    res.send({
+      page,
+      totalPages,
+      totalResults,
+      data,
+    });
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -86,21 +121,6 @@ mobileRouter.delete("/delete/:id", async (req, res) => {
   }
 });
 
-// SEARCHING
-// mobileRouter.get("/", async (req, res) => {
-//   try {
-//     const query = req.query.q;
-//     const regex = new RegExp(query, "i");
-//     const results = await AppleProductModel.find({
-//       $or: [{ title: regex }, { brand: regex }, { rate: regex }],
-//     });
-//     res.status(200).send(results);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Server error");
-//   }
-// });
-
 module.exports = { mobileRouter };
 
 // mobileRouter.post("/createproduct", async (req, res) => {
@@ -119,3 +139,7 @@ module.exports = { mobileRouter };
 //     res.status(400).send(err.message);
 //   }
 // });
+
+// const { limit = 10, page = 1 } = req.query;
+// .limit(limit)
+// .skip((page - 1) * limit);
