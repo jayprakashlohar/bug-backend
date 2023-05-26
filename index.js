@@ -7,6 +7,7 @@ const { mobileRouter } = require("./Routes/MobileProducts.route");
 const { wishlistRouter } = require("./Routes/Wishlist.route");
 const { cartRouter } = require("./Routes/Cart.route");
 // const { Authentication } = require("./Middleware/middleware");
+const Razorpay = require("razorpay");
 const app = express();
 const PORT = process.env.PORT;
 
@@ -20,6 +21,26 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.status(200).send({ message: "Welcome..." });
+});
+
+var instance = new Razorpay({
+  key_id: process.env.key_id,
+  key_secret: process.env.key_secret,
+});
+
+app.post("/create-order", async (req, res) => {
+  var options = {
+    amount: req.body.total,
+    currency: "INR",
+    receipt: "order_rcptid_11",
+  };
+
+  try {
+    const order = await instance.orders.create(options);
+    res.send(order);
+  } catch (error) {
+    console.log(error.message);
+  }
 });
 
 app.use("/user", userRouter);
