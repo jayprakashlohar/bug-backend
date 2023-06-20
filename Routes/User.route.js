@@ -43,13 +43,9 @@ userRouter.post("/login", async (req, res) => {
         // result == true if password matched
         if (result) {
           //genrate a token using jwt package and send back to user
-          var token = jwt.sign(
-            { userID: check_exist[0]._id },
-            "secret"
-            // {
-            //   expiresIn: "1m",
-            // }
-          );
+          var token = jwt.sign({ userID: check_exist[0]._id }, "secret", {
+            expiresIn: "24h",
+          });
           res.send({ msg: "Login successfully", token: token });
         } else {
           res.status(404).send({ response: "Invalid Credential" });
